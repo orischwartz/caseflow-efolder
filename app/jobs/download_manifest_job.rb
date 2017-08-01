@@ -1,7 +1,7 @@
 class DownloadManifestJob < ActiveJob::Base
   queue_as :default
 
-  def perform(download)
+  def perform(download, should_download_content: false)
     external_documents = VBMSService.fetch_documents_for(download)
 
     if FeatureToggle.enabled?(:vva_service, user: download.user)
@@ -21,6 +21,7 @@ class DownloadManifestJob < ActiveJob::Base
     download.reload
     download.update_attributes!(status: :pending_confirmation)
 
+    SaveFilesInS3Job.perform_later(download) if should_download_content
   rescue VBMS::ClientError => e
     capture_error(e, download, :vbms_connection_error)
   rescue VVA::ClientError => e

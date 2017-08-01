@@ -221,15 +221,10 @@ class Download < ActiveRecord::Base
     end
   end
 
-  def force_fetch_manifest_if_expired!
-    return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
-    demo? ? Fakes::DownloadManifestJob.perform_now(self) : DownloadManifestJob.perform_now(self)
-  end
-
   def prepare_files_for_api!(start_download: false)
-    force_fetch_manifest_if_expired!
-
-    start_save_files_in_s3 if start_download
+    return if manifest_fetched_at && manifest_fetched_at > 3.hours.ago
+    demo? ? Fakes::DownloadManifestJob.perform_later(self, should_download_content: true) :
+      DownloadManifestJob.perform_later(self, should_download_content: true)
   end
 
   def start_fetch_manifest
@@ -237,10 +232,6 @@ class Download < ActiveRecord::Base
   end
 
   private
-
-  def start_save_files_in_s3
-    SaveFilesInS3Job.perform_later(self)
-  end
 
   def calculate_estimated_to_complete_at
     return nil unless pending_documents?
