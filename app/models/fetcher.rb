@@ -2,8 +2,8 @@ class Fetcher
   include ActiveModel::Model
   attr_accessor :document, :external_service
 
-  def content(save_document_metadata: true)
-    if save_document_metadata
+  def content
+    if !document.from_api?
       download_from_service_and_record
     else
       download_from_service

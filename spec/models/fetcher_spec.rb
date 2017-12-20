@@ -1,5 +1,5 @@
 describe Fetcher do
-  let(:download) { Download.create(file_number: "21012") }
+  let(:download) { Download.create(file_number: "21012", from_api: from_api) }
   let(:document) do
     download.documents.build(
       id: "1234",
@@ -15,8 +15,9 @@ describe Fetcher do
   let(:fake_pdf_content) { "From VBMS" }
 
   context "#content" do
-    let(:save_document_metadata) { true }
-    subject { document.fetcher.content(save_document_metadata: save_document_metadata) }
+    let(:from_api) { false }
+
+    subject { document.fetcher.content }
 
     context "when file is in S3" do
       before do
@@ -45,9 +46,10 @@ describe Fetcher do
         expect(document.started_at).to_not eq nil
       end
 
-      context "when save_document_metadata is false" do
-        let(:save_document_metadata) { false }
-        it "should not update DB when save_document_metadata is false" do
+      context "when from api" do
+        let(:from_api) { true }
+
+        it "should not update DB document metadata" do
           subject
           expect(document.started_at).to eq nil
         end

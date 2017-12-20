@@ -16,15 +16,6 @@ class Api::V2::RecordsController < Api::V1::ApplicationController
 
   private
 
-  def document_failed
-    render json: {
-      "errors": [
-        "title": "Document download failed",
-        "detail": "An upstream dependency failed to fetch document contents."
-      ]
-    }, status: 502
-  end
-
   def enable_caching
     expires_in 30.days, public: true
   end

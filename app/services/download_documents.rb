@@ -60,7 +60,7 @@ class DownloadDocuments
     end
   end
 
-  def download_contents(save_locally: true)
+  def download_contents
     begin
       @download.update_attributes!(started_at: Time.zone.now)
     rescue ActiveRecord::StaleObjectError
@@ -70,10 +70,9 @@ class DownloadDocuments
 
     @download.documents.where(download_status: 0).each do |document|
       before_document_download(document)
-      fetch_result = document.fetch_content!(save_document_metadata: true)
-      document.save_locally(fetch_result[:content]) if save_locally && !fetch_result[:error_kind]
+      result = document.fetch_content!
 
-      return false if fetch_result[:error_kind] == :caseflow_efolder_error
+      document.save_locally(result) if !document.from_api? && !document.failed?
       @download.touch
     end
   end

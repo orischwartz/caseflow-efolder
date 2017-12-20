@@ -85,8 +85,8 @@ describe "Documents API v1", type: :request do
 
       json = JSON.parse(response.body)
       expect(json["errors"].length).to eq(1)
-      expect(json["errors"].first["title"]).to eq("Document download failed")
-      expect(json["errors"].first["detail"]).to eq("Caseflow eFolder failed to fetch document contents.")
+      expect(json["errors"].first["title"]).to eq("Unknown error occured")
+      expect(json["errors"].first["detail"]).to match(/Attempted to  a stale object/)
     end
 
     context "When user doesn't own corresponding download record" do

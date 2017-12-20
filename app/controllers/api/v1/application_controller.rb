@@ -3,7 +3,7 @@ class Api::V1::ApplicationController < BaseController
   before_action :authenticate_or_authorize
 
   rescue_from StandardError do |error|
-    capture_error(error)
+    ExceptionLogger.capture(error)
 
     render json: {
       "errors": [
@@ -38,6 +38,15 @@ class Api::V1::ApplicationController < BaseController
     current_user && (current_user.can?("Reader") || current_user.can?("Hearing Prep") || current_user.admin?)
   end
 
+  def document_failed
+    render json: {
+      "errors": [
+        "title": "Document download failed",
+        "detail": "An upstream dependency failed to fetch document contents."
+      ]
+    }, status: 502
+  end
+
   def authenticate_or_authorize
     # We allow users to access the API by either authenticating with the API token
     # or by making sure their user session has the Reader or System Admin role. We
@@ -61,10 +70,5 @@ class Api::V1::ApplicationController < BaseController
 
   def css_id
     request.headers["HTTP_CSS_ID"]
-  end
-
-  def capture_error(e)
-    Rails.logger.error "#{e.message}\n#{e.backtrace.join("\n")}"
-    Raven.capture_exception(e)
   end
 end

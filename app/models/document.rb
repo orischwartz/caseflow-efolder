@@ -9,9 +9,17 @@ class Document < ActiveRecord::Base
   AVERAGE_DOWNLOAD_RATE_CACHE_KEY = "historical-average-download-rate".freeze
   MAXIMUM_FILENAME_LENGTH = 100
 
-  enum download_status: { pending: 0, success: 1, failed: 2 }
+  enum download_status: {
+    pending: 0,
+    success: 1,
+    failed: 2
+  }
+
+  EXCEPTIONS = [VBMS::ClientError, VVA::ClientError].freeze
 
   after_initialize { |document| document.vbms_filename ||= "" }
+
+  delegate :from_api?, to: :download
 
   # It is expected that some of the documents may have a MIME type of "application/octet-stream".
   # However, there is not a guarantee that all documents of this type can be opened as PDFs.
@@ -33,20 +41,10 @@ class Document < ActiveRecord::Base
     @path ||= File.join(download.download_dir, id.to_s)
   end
 
-  def fetch_content!(save_document_metadata:)
-    return {
-      content: fetcher.content(save_document_metadata: save_document_metadata),
-      error_kind: nil
-    }
-  rescue VBMS::ClientError => e
-    update_with_error "VBMS::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-    return { content: nil, error_kind: :vbms_error }
-  rescue VVA::ClientError => e
-    update_with_error "VVA::ClientError::#{e.message}\n#{e.backtrace.join("\n")}"
-    return { content: nil, error_kind: :vva_error }
-  rescue ActiveRecord::StaleObjectError
-    Rails.logger.info "Duplicate download detected. Document ID: #{id}"
-    return { content: nil, error_kind: :caseflow_efolder_error }
+  def fetch_content!
+    fetcher.content
+  rescue *EXCEPTIONS => e
+    update_attributes!(download_status: :failed)
   end
 
   # Since Windows has the maximum length for a path, we crop type_name if the filename is longer than set maximum (issue #371)
@@ -164,13 +162,6 @@ class Document < ActiveRecord::Base
   end
 
   private
-
-  def update_with_error(error)
-    update_attributes!(
-      download_status: :failed,
-      error_message: error
-    )
-  end
 
   def external_service
     from_vva? ? VVAService : VBMSService
