@@ -42,8 +42,8 @@ export default class DownloadContainer extends React.PureComponent {
       </AppSegment>
 
       <AppSegment filledBackground>
-        <p>eFolder Express found a total of {totalDocumentsCount} documents ({vbmsDocumentsCount} from VBMS and
-          {vvaDocumentsCount} from VVA/LCM) for {veteranName} #{fileNumber}. Verify the Veteran ID and click the
+        <p>eFolder Express found a total of {totalDocumentsCount} documents ({vbmsDocumentsCount} from VBMS and&nbsp;
+          {vvaDocumentsCount} from VVA/LCM) for {veteranName} #{fileNumber}. Verify the Veteran ID and click the&nbsp;
           {startRetrievalButtonLabel} button below to start retrieving the eFolder.
         </p>
 
