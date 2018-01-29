@@ -6,6 +6,7 @@ import Footer from '@department-of-veterans-affairs/appeals-frontend-toolkit/com
 import NavigationBar from '@department-of-veterans-affairs/appeals-frontend-toolkit/components/NavigationBar';
 
 import HelpContainer from './HelpContainer';
+import DownloadContainer from './DownloadContainer';
 import WelcomeContainer from './WelcomeContainer';
 
 class InitContainer extends React.PureComponent {
@@ -23,6 +24,7 @@ class InitContainer extends React.PureComponent {
           defaultUrl="/">
           <Route exact path="/" component={WelcomeContainer} />
           <Route exact path="/help" component={HelpContainer} />
+          <Route exact path="/downloads/:id" component={DownloadContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"
