@@ -8,7 +8,13 @@ import InitContainer from './containers/InitContainer';
 
 module.exports = {
   init(props) {
-    const initState = {};
+    const initState = {
+      veteranName: 'DeMarco Murray',
+      fileNumber: '128677390',
+
+      // TODO: Does this need to be a variable?
+      startDownloadButtonLabel: 'Start retrieving efolder'
+    };
     const store = createStore(reducer, { ...initState,
       ...props });
 
