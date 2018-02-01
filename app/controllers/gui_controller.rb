@@ -11,6 +11,7 @@ class GuiController < ApplicationController
 
   def initial_react_data
     {
+      csrfToken: form_authenticity_token,
       dropdownUrls: dropdown_urls,
       efolderAccessImagePath: ActionController::Base.helpers.image_path("help/efolder-access.png"),
       feedbackUrl: feedback_url,

@@ -57,7 +57,7 @@ export default class PageLoadingIndicator extends React.PureComponent {
 
           <path
             opacity="1"
-            fill="#d6d7d9"
+            fill="#F15A24"
             fillOpacity="1"
             d = "M250.9,469.4c-13.9,0-25.8-8.1-30.9-21l-29.9-75.3c-2.3-5.8-7.9-9.6-14.2-9.6c-0.8,0-1.6,0.1-2.4,0.2
             l-77,12.4c-1.8,0.3-3.7,0.4-5.5,0.4c-12.7,0-24.1-7.2-29.8-18.9c-5.6-11.6-4.1-25,3.9-35.1
