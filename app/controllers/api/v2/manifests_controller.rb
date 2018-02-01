@@ -30,7 +30,7 @@ class Api::V2::ManifestsController < Api::V1::ApplicationController
   end
 
   def file_number
-    request.headers["HTTP_FILE_NUMBER"]
+    @file_number ||= request.headers["HTTP_FILE_NUMBER"] || params[:id] && Manifest.find(params[:id]).file_number
   end
 
   def validate_access

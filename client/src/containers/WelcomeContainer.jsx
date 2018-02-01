@@ -35,9 +35,6 @@ class WelcomeContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          // TODO: We will need to be able to query for the status of the manifest fetch based on the
-          // manifest ID.
-          // https://github.com/department-of-veterans-affairs/caseflow-efolder/blob/master/docs/v2/endpoints.md
           this.props.history.push(`/downloads/${resp.body.data.id}`);
         }
       );

@@ -35,7 +35,7 @@ Rails.application.routes.draw do
     namespace :v2 do
       namespace :manifests, only: [] do
         post "/", action: :start
-        get "/", action: :progress
+        get "/(:id)", action: :progress
         get :history
       end
       resources :manifests, only: [] do

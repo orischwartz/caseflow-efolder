@@ -26,7 +26,7 @@ class InitContainer extends React.PureComponent {
           <Route exact path="/" component={WelcomeContainer} />
           <Route exact path="/out-of-service" component={OutOfServiceContainer} />
           <Route exact path="/help" component={HelpContainer} />
-          <Route exact path="/downloads/:id" component={DownloadContainer} />
+          <Route exact path="/downloads/:manifestId" component={DownloadContainer} />
         </NavigationBar>
         <Footer
           appName="eFolder Express"
