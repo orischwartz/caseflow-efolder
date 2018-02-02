@@ -46,6 +46,10 @@ class DownloadContainer extends React.PureComponent {
       );
   }
 
+  // TODO: Make the DownloadListContainer work.
+  // TODO: Add display for in progress.
+  // TODO: Add display for download complete.
+
   render() {
     switch (this.props.manifestStatus) {
     case MANIFEST_STATUS_LISTED:
