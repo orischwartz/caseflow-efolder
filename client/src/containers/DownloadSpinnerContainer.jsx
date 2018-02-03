@@ -10,7 +10,7 @@ import PageLoadingIndicator from '../components/PageLoadingIndicator';
 class DownloadSpinnerContainer extends React.PureComponent {
   render() {
     return <main className="usa-grid">
-      <DownloadPageHeader fileNumber={this.props.fileNumber} veteranName={this.props.veteranName} />
+      <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
 
       <AppSegment filledBackground>
         <PageLoadingIndicator>We are gathering the list of files in the eFolder now...</PageLoadingIndicator>
@@ -22,7 +22,7 @@ class DownloadSpinnerContainer extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  fileNumber: state.fileNumber,
+  veteranId: state.veteranId,
   startDownloadButtonLabel: state.startDownloadButtonLabel,
   veteranName: state.veteranName
 });

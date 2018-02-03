@@ -1,25 +1,51 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import AppSegment from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/AppSegment';
 
+import { setVeteranId, setVeteranName } from '../actions';
 import DocumentListRow from '../components/DocumentListRow';
 import DownloadPageFooter from '../components/DownloadPageFooter';
 import DownloadPageHeader from '../components/DownloadPageHeader';
 
+const aliasForSource = function(source) {
+  if (source === 'VVA') {
+    return 'VVA/LCM';
+  }
+
+  return source;
+};
+
+const formatDateString = function(str) {
+  const date = new Date(str);
+
+  // TODO: Current version of efolder displays months and dates with leading zeroes if < 10.
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+};
+
 class DownloadListContainer extends React.PureComponent {
+  componentDidMount() {
+    const resp = this.props.manifestFetchResponse;
+
+    this.props.setVeteranName(resp.body.data.attributes.veteran_full_name);
+    this.props.setVeteranId(resp.headers.http_file_number);
+  }
+
   render() {
-    const totalDocumentsCount = 11;
-    const vbmsDocumentsCount = 10;
-    const vvaDocumentsCount = 1;
+    const resp = this.props.manifestFetchResponse;
+
+    const docSources = resp.body.data.attributes.sources;
+    const totalDocumentsCount = docSources.reduce((cnt, src) => cnt + src.number_of_documents, 0);
+    const documentCountNote = docSources.map((src) => (
+      `${src.number_of_documents} from ${aliasForSource(src.source)}`)).join(' and ');
 
     return <main className="usa-grid">
-      <DownloadPageHeader fileNumber={this.props.fileNumber} veteranName={this.props.veteranName} />
+      <DownloadPageHeader veteranId={this.props.veteranId} veteranName={this.props.veteranName} />
 
       <AppSegment filledBackground>
-        <p>eFolder Express found a total of {totalDocumentsCount} documents ({vbmsDocumentsCount} from VBMS and&nbsp;
-          {vvaDocumentsCount} from VVA/LCM) for {this.props.veteranName} #{this.props.fileNumber}.&nbsp;
-          Verify the Veteran ID and click the&nbsp;
+        <p>eFolder Express found a total of {totalDocumentsCount} documents ({documentCountNote}) for&nbsp;
+          {this.props.veteranName} #{this.props.veteranId}. Verify the Veteran ID and click the&nbsp;
           {this.props.startDownloadButtonLabel} button below to start retrieving the eFolder.
         </p>
 
@@ -32,122 +58,20 @@ class DownloadListContainer extends React.PureComponent {
             <thead>
               <tr>
                 <th className ="document-col" scope="col">Document Type</th>
-                <th className ="sources-col" scope="col" id="vva-tour-3">Source</th>
+                <th className ="sources-col" scope="col">Source</th>
                 <th className ="upload-col" scope="col">Receipt Date</th>
               </tr>
             </thead>
 
             <tbody className ="ee-document-scroll" >
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
-              <DocumentListRow
-                type="VA 21-4142a General Release for Medical Provider Information"
-                source="VBMS"
-                received_at="01/29/2018"
-              />
-              <DocumentListRow
-                type="VA 24-0296 Direct Deposit Enrollment"
-                source="VVA/LCM"
-                received_at="01/27/2018"
-              />
+              { resp.body.data.attributes.records.map((record) => (
+                <DocumentListRow
+                  type={record.type_description}
+                  source={aliasForSource(record.source)}
+                  received_at={formatDateString(record.received_at)}
+                  key={record.id}
+                />)
+              )}
             </tbody>
           </table>
         </div>
@@ -159,9 +83,15 @@ class DownloadListContainer extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  fileNumber: state.fileNumber,
+  manifestFetchResponse: state.manifestFetchResponse,
   startDownloadButtonLabel: state.startDownloadButtonLabel,
+  veteranId: state.veteranId,
   veteranName: state.veteranName
 });
 
-export default connect(mapStateToProps)(DownloadListContainer);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  setVeteranId,
+  setVeteranName
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(DownloadListContainer);

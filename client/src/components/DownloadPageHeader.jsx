@@ -14,9 +14,9 @@ export default class DownloadPageHeader extends React.PureComponent {
           type="submit"
           title="Copy to clipboard"
           className="cf-apppeal-id ee-copy-button"
-          data-clipboard-text={this.props.fileNumber}
+          data-clipboard-text={this.props.veteranId}
         >
-          {this.props.fileNumber} <CopyIcon />
+          {this.props.veteranId} <CopyIcon />
         </button>
       </div>
     </AppSegment>;

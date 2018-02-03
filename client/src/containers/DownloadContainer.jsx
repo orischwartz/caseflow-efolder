@@ -6,23 +6,35 @@ import nocache from 'superagent-no-cache';
 
 import StatusMessage from '@department-of-veterans-affairs/caseflow-frontend-toolkit/components/StatusMessage';
 
-import { clearManifestFetchResponse, setManifestFetchResponse, updateManifestStatus } from '../actions';
 import {
-  MANIFEST_STATUS_LOADING,
-  MANIFEST_STATUS_LISTED,
-  MANIFEST_STATUS_DOWNLOADING,
-  MANIFEST_STATUS_COMPLETE,
-  MANIFEST_STATUS_ERRORED
+  clearManifestFetchState,
+  setManifestFetchErrorMessage,
+  setManifestFetchResponse,
+  setManifestFetchStatus
+} from '../actions';
+import {
+  MANIFEST_FETCH_STATUS_LOADING,
+  MANIFEST_FETCH_STATUS_LISTED,
+  // MANIFEST_FETCH_STATUS_DOWNLOADING,
+  // MANIFEST_FETCH_STATUS_COMPLETE,
+  MANIFEST_FETCH_STATUS_ERRORED
 } from '../Constants';
 import DownloadListContainer from './DownloadListContainer';
 import DownloadSpinnerContainer from './DownloadSpinnerContainer';
+
+// Reader polls every second for a maximum of 20 seconds. Match that here.
+const MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS = 1;
+const MAX_MANIFEST_FETCH_RETRIES = 20;
 
 // TODO: Add modal for confirming that the user wants to download even when the zip does not contain the entire
 // list of all documents.
 class DownloadContainer extends React.PureComponent {
   componentDidMount() {
-    this.props.clearManifestFetchResponse();
+    this.props.clearManifestFetchState();
+    this.pollManifestFetchEndpoint(0);
+  }
 
+  pollManifestFetchEndpoint(retryCnt = 0) {
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -36,35 +48,49 @@ class DownloadContainer extends React.PureComponent {
       use(nocache).
       then(
         (resp) => {
-          this.props.setManifestFetchResponse(resp);
-          this.props.updateManifestStatus(MANIFEST_STATUS_LISTED);
+          if (resp.body.data.attributes.manifest_fetch_complete === false) {
+            if (retryCnt < MAX_MANIFEST_FETCH_RETRIES) {
+              const sleepTime = MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS * 1000;
+
+              setTimeout(() => {
+                this.pollManifestFetchEndpoint(retryCnt + 1);
+              }, sleepTime);
+            } else {
+              const sleepLengthSeconds = MAX_MANIFEST_FETCH_RETRIES * MANIFEST_FETCH_SLEEP_TIMEOUT_SECONDS;
+              const errMsg = `Manifest fetch timed out after ${sleepLengthSeconds} seconds`;
+
+              this.props.setManifestFetchErrorMessage(errMsg);
+              this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_ERRORED);
+            }
+          } else {
+            this.props.setManifestFetchResponse(resp);
+            this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_LISTED);
+          }
         },
         (err) => {
-          this.props.setManifestFetchResponse(err.response);
-          this.props.updateManifestStatus(MANIFEST_STATUS_ERRORED);
+          const errMsg = `${err.response.statusCode} (${err.response.statusText}) ${err.response.body.status}`;
+
+          this.props.setManifestFetchErrorMessage(errMsg);
+          this.props.setManifestFetchStatus(MANIFEST_FETCH_STATUS_ERRORED);
         }
       );
   }
 
   // TODO: Make the DownloadListContainer work.
-  // TODO: Add display for in progress.
-  // TODO: Add display for download complete.
 
   render() {
-    switch (this.props.manifestStatus) {
-    case MANIFEST_STATUS_LISTED:
+    switch (this.props.manifestFetchStatus) {
+    case MANIFEST_FETCH_STATUS_LISTED:
       return <DownloadListContainer />;
-    case MANIFEST_STATUS_ERRORED:
-      let resp = this.props.manifestFetchResponse;
-
+    case MANIFEST_FETCH_STATUS_ERRORED:
       return <main className="usa-grid">
-        <StatusMessage title="Could not fetch manifest">
-          {resp.statusCode} ({resp.statusText}) {resp.body.status}
-        </StatusMessage>
+        <StatusMessage title="Could not fetch manifest">{this.props.manifestFetchErrorMessage}</StatusMessage>
       </main>;
-    case MANIFEST_STATUS_DOWNLOADING:
-    case MANIFEST_STATUS_COMPLETE:
-    case MANIFEST_STATUS_LOADING:
+    // TODO: Add display for in progress.
+    // TODO: Add display for download complete.
+    // case MANIFEST_FETCH_STATUS_DOWNLOADING:
+    // case MANIFEST_FETCH_STATUS_COMPLETE:
+    case MANIFEST_FETCH_STATUS_LOADING:
     default:
       return <DownloadSpinnerContainer />;
     }
@@ -74,13 +100,15 @@ class DownloadContainer extends React.PureComponent {
 const mapStateToProps = (state) => ({
   csrfToken: state.csrfToken,
   manifestFetchResponse: state.manifestFetchResponse,
-  manifestStatus: state.manifestStatus
+  manifestFetchErrorMessage: state.manifestFetchErrorMessage,
+  manifestFetchStatus: state.manifestFetchStatus
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  clearManifestFetchResponse,
+  clearManifestFetchState,
+  setManifestFetchErrorMessage,
   setManifestFetchResponse,
-  updateManifestStatus
+  setManifestFetchStatus
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DownloadContainer);

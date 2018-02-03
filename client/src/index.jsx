@@ -7,13 +7,13 @@ import thunk from 'redux-thunk';
 import reducer from './reducer';
 import InitContainer from './containers/InitContainer';
 
+// TODO: Should we set up all of our defaults in the GuiController?
 const initState = {
-  fileNumber: '128677390',
   searchInputText: '',
-
-  // TODO: Does this need to be a variable?
+  // TODO: Does startDownloadButtonLabel need to be a variable?
   startDownloadButtonLabel: 'Start retrieving efolder',
-  veteranName: 'DeMarco Murray'
+  veteranId: '',
+  veteranName: ''
 };
 
 module.exports = {
