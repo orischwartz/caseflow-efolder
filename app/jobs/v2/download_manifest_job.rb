@@ -7,7 +7,7 @@ class V2::DownloadManifestJob < ActiveJob::Base
 
     documents = ManifestFetcher.new(manifest_source: manifest_source).process
 
-    V2::SaveFilesInS3Job.perform_later(manifest_source) if documents.present? && !ApplicationController.helpers.ui_user?
+    # V2::SaveFilesInS3Job.perform_later(manifest_source) if documents.present? && !ApplicationController.helpers.ui_user?
   rescue StandardError => e
     manifest_source.update!(status: :failed)
     raise e
