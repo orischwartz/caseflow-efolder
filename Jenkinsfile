@@ -42,8 +42,16 @@ node('deploy') {
       stage('deploy-message') {
         checkout scm
         DEPLOY_MESSAGE = sh (
-          // Save the most recent commit to a message to be announced in Slack by the commonPipeline.
-          script: "git log HEAD^..HEAD --pretty='format:%h %<(15)%an %s'",
+          // this script will:
+          // get the latest `deployed` release created by: https://github.com/department-of-veterans-affairs/appeals-deployment/blob/master/ansible/utility-roles/deployed-version/files/tag_deployed_commit.py
+          // compare current HEAD commit to the last deployed release
+          // save the message to be announced in Slack by the pipeline
+          script: "git log \$(git ls-remote --tags https://${env.GIT_CREDENTIAL}@github.com/department-of-veterans-affairs/caseflow-efolder.git \
+                   | awk '{print \$2}' | grep -E 'deployed' \
+                   | sort -t/ -nk4 \
+                   | awk -F\"/\" '{print \$0}' \
+                   | tail -n 1 \
+                   | awk '{print \$1}')..HEAD --pretty='format:%h %<(15)%an %s'",
           returnStdout: true
         ).trim()
       }
@@ -65,4 +73,8 @@ node('deploy') {
 // Execute the common pipeline.
 // Note that this must be outside of the node block since the common pipeline
 // runs another set of stages.
-commonPipeline.deploy(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+if (env.COMMON_PIPELINE_TASK == 'build') {
+  commonPipeline.build(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+} else {
+  commonPipeline.deploy(APP_NAME, APP_VERSION, DEPLOY_MESSAGE);
+}
