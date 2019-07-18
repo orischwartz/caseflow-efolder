@@ -4,7 +4,7 @@
 
 pipeline {
     agent {
-        docker { image 'williamyeh/ansible:centos7' }
+        docker { image 'h1kkan/jenkins-docker:lts' }
     }
     
     stages { 
