@@ -1,4 +1,6 @@
-class AddCssIdToDownloadsAndSearches < ActiveRecord::Migration
+class AddCssIdToDownloadsAndSearches < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     add_column :searches, :css_id, :string
     add_column :downloads, :css_id, :string

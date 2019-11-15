@@ -1,4 +1,6 @@
-class CreateManifestStatuses < ActiveRecord::Migration
+class CreateManifestStatuses < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     create_table :manifest_statuses do |t|
       t.integer  "manifest_id"

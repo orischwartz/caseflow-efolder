@@ -1,4 +1,6 @@
-class CreateDocuments < ActiveRecord::Migration
+class CreateDocuments < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     create_table :documents do |t|
       t.belongs_to :download, index: true

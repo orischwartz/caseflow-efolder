@@ -1,4 +1,4 @@
-class DeduplicateUserRecords < ActiveRecord::Migration
+class DeduplicateUserRecords < ActiveRecord::Migration[5.1]
   # rubocop:disable Metrics/MethodLength
   def up
     # Update css_id field in downloads table to reference newest version of duplicate user.

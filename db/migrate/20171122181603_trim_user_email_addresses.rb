@@ -1,4 +1,4 @@
-class TrimUserEmailAddresses < ActiveRecord::Migration
+class TrimUserEmailAddresses < ActiveRecord::Migration[5.1]
   def up
     execute "update users set email = trim(email);"
   end

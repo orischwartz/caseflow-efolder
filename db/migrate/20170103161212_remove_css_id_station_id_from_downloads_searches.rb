@@ -1,4 +1,4 @@
-class RemoveCssIdStationIdFromDownloadsSearches < ActiveRecord::Migration
+class RemoveCssIdStationIdFromDownloadsSearches < ActiveRecord::Migration[5.1]
   def up
     remove_column :searches, :user_station_id
     remove_column :searches, :css_id

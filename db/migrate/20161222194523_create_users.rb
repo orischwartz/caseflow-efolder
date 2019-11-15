@@ -1,4 +1,6 @@
-class CreateUsers < ActiveRecord::Migration
+class CreateUsers < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def up
     create_table :users do |t|
       t.string :css_id, null: false

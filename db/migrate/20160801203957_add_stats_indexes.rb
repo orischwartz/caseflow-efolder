@@ -1,4 +1,6 @@
-class AddStatsIndexes < ActiveRecord::Migration
+class AddStatsIndexes < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     add_column :searches, :created_at, :datetime
 

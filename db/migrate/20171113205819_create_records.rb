@@ -1,4 +1,6 @@
-class CreateRecords < ActiveRecord::Migration
+class CreateRecords < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     create_table "records" do |t|
       t.integer  "manifest_id"

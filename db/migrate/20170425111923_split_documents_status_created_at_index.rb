@@ -1,4 +1,6 @@
-class SplitDocumentsStatusCreatedAtIndex < ActiveRecord::Migration
+class SplitDocumentsStatusCreatedAtIndex < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     add_index "documents", ["download_status"], name: "index_documents_on_download_status", using: :btree
     add_index "documents", ["completed_at"], name: "index_documents_on_completed_at", using: :btree

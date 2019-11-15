@@ -27,11 +27,10 @@ ActiveRecord::Schema.define(version: 20190508135156) do
     t.string "queue"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "documents", force: :cascade do |t|
-    t.integer "download_id"
+    t.bigint "download_id"
     t.integer "download_status", default: 0
     t.string "document_id"
     t.string "vbms_filename"
@@ -52,6 +51,7 @@ ActiveRecord::Schema.define(version: 20190508135156) do
     t.integer "size"
     t.integer "conversion_status"
     t.index ["completed_at"], name: "index_documents_on_completed_at"
+    t.index ["download_id", "document_id"], name: "index_documents_on_download_id_and_document_id"
     t.index ["download_id"], name: "index_documents_on_download_id"
     t.index ["download_status"], name: "index_documents_on_download_status"
   end
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 20190508135156) do
     t.string "veteran_last_name"
     t.string "veteran_first_name"
     t.string "veteran_last_four_ssn"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.bigint "zipfile_size"
     t.boolean "from_api", default: false
     t.datetime "manifest_vva_fetched_at"
@@ -136,11 +136,11 @@ ActiveRecord::Schema.define(version: 20190508135156) do
   end
 
   create_table "searches", force: :cascade do |t|
-    t.integer "download_id"
+    t.bigint "download_id"
     t.string "file_number"
     t.integer "status", default: 0
     t.datetime "created_at"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["created_at"], name: "searches_created_at"
     t.index ["download_id"], name: "index_searches_on_download_id"
     t.index ["status", "created_at"], name: "searches_status_created_at"

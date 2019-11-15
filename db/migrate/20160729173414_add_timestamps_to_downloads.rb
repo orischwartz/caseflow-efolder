@@ -1,4 +1,6 @@
-class AddTimestampsToDownloads < ActiveRecord::Migration
+class AddTimestampsToDownloads < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     add_column :downloads, :manifest_fetched_at, :datetime
     add_column :downloads, :started_at, :datetime

@@ -1,4 +1,4 @@
-class MoveFetchedFilesStatusToManifests < ActiveRecord::Migration
+class MoveFetchedFilesStatusToManifests < ActiveRecord::Migration[5.1]
   def change
     safety_assured { add_column :manifests, :fetched_files_status, :integer, default: 0 }
     add_column :manifests, :fetched_files_at, :datetime

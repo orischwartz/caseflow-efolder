@@ -1,4 +1,4 @@
-class CreateManifests < ActiveRecord::Migration
+class CreateManifests < ActiveRecord::Migration[5.1]
   def change
     create_table :manifests do |t|
       t.string   "file_number"

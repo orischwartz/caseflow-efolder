@@ -1,4 +1,4 @@
-class RemoveUserIdFromSearchesAndDownloads < ActiveRecord::Migration
+class RemoveUserIdFromSearchesAndDownloads < ActiveRecord::Migration[5.1]
   def change
     remove_column :searches, :user_id
     remove_column :downloads, :user_id

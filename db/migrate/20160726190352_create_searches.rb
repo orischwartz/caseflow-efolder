@@ -1,4 +1,6 @@
-class CreateSearches < ActiveRecord::Migration
+class CreateSearches < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def change
     create_table :searches do |t|
       t.belongs_to :download, index: true

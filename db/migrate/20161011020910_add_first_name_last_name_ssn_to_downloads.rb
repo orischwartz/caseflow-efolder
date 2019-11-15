@@ -1,4 +1,6 @@
-class AddFirstNameLastNameSsnToDownloads < ActiveRecord::Migration
+class AddFirstNameLastNameSsnToDownloads < ActiveRecord::Migration[5.1]
+  safety_assured
+
   def up
     # we could be more clever here by renaming a name column
     # instead of adding two columns, but this seems fine.
