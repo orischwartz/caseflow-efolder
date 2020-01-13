@@ -21,8 +21,8 @@ GIT
 
 GIT
   remote: https://github.com/department-of-veterans-affairs/connect_vbms.git
-  revision: a97a56f72d4a08f634c7f569fdcc83615362a8b2
-  ref: a97a56f72d4a08f634c7f569fdcc83615362a8b2
+  revision: b3393d92f91ba2f2c332c837206632112cdff6a9
+  ref: b3393d92f91ba2f2c332c837206632112cdff6a9
   specs:
     connect_vbms (1.2.0)
       httpclient (~> 2.8.0)
@@ -425,10 +425,10 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    single_cov (1.3.2)
     slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
-    single_cov (1.3.2)
     socksify (1.7.1)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
